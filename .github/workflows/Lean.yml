@@ -8,22 +8,35 @@ name: Lean_5.4内核
 
 on: 
 # Release 发布触发
-  release:
-    types: [published]
+#  release:
+#    types: [published]
     
 # 编辑触发    
 #  push:
 #    branches: 
 #      - master
-      
+
+
 # 定时触发      
-  schedule:
-    - cron: 0 */48 * * *
+#  schedule:
+#    - cron: 0 */48 * * *
 
 # 点赞触发  
-  watch:
-    types: started
-    
+#  watch:
+#    types: started
+
+# SSH触发
+  repository_dispatch:
+    types: [Lean_5.4内核,sshLean_5.4内核]
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'Lean_5.4内核'
+        required: false
+        default: 'false'
+
+
+
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -112,7 +125,16 @@ jobs:
         cp -f package/litte/commit/Leandiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        
+
+    - name: SSH连接到Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'sshLean_5.4内核')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+
+
     - name: 下载包文件
       working-directory: ./openwrt
       run: |
