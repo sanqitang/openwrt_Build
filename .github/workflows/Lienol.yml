@@ -8,8 +8,8 @@ name: Lienol_4.14内核
 
 on: 
 # Release 发布触发
-  release:
-    types: [published]
+#  release:
+#    types: [published]
     
 # 编辑触发    
 #  push:
@@ -17,8 +17,8 @@ on:
 #      - master
       
 # 定时触发      
-  schedule:
-    - cron: 0 */48 * * *
+#  schedule:
+#    - cron: 0 */48 * * *
 
 # 点赞触发  
 #  watch:
